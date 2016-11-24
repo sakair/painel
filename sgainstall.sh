@@ -12,14 +12,16 @@ echo "Usuário devidamente logado como root/sudo... continuando a execução do 
 fi
 
 cd ~;
-echo "Digite o nome a ser usado no projeto: ";
-read nomeProj;
-echo "Digitte o nome a ser usado para o banco de dados (sem acentuação!):";
-read nomeDbProj;
-echo "Digite a senha a ser usada neste banco de dados
-OBS: A MESMA SENHA DEVERÁ SER DIGITADA DUAS VEZES NOVAMENTE MAIS TARDE!";
-read senhaMysql;
+nomeProj="teste";
+echo "Nome a ser usado no projeto: $nomeProj";
+nomeDbProj="bancoteste";
+echo "Nome a ser usado para o banco de dados: $nomeDbProj";
+senhaMysql="123456";
+echo "Senha a ser usada neste banco de dados: $senhaMysql";
 echo "Instalando dependencias do projeto ${nomeProj}";
+export DEBIAN_FRONTEND="noninteractive"
+sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password $senhaMysql";
+sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $senhaMysql";
 sudo apt-get install -y --force-yes mysql-server apache2 libapache2-mod-php5 php5-gd php5-mysql curl php5-mcrypt zip unzip;
 
 # pode ser que seja necessária a instalação do 'php5-odbc'
@@ -83,6 +85,12 @@ cd ~;
 # Depois libere o acesso as pastas do /var/www/
 sudo chmod 755 /var/www && sudo chmod 777 /var/www/$nomeProj/var/ && sudo chmod 777 /var/www/$nomeProj/config/; 
 
+if [ $(ls /var/www/$nomeProj/var/cache|wc -l) != 0 ]; then # Limpar Cache caso a pasta var possua o arquivo cache
+sudo rm -rf /var/www/$nomeProj/var/cache;
+echo "Cache Limpo!"
+else
+echo "Cache já está limpo!"
+fi
 # por fim, exclua o arquivo "composer.lock" que se encontra na raiz do projeto.
 # echo "Tentando remover o arquivo \"composer.lock\"...";
 # sudo rm /var/www/$nomeProj/composer.lock;
