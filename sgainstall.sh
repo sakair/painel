@@ -1,6 +1,7 @@
 #!/bin/bash
 # ESSE SCRIPT RODA APENAS EM VERSOES DO UBUNTU DE 14.04 OU MENOS!
 # testado em um Ubuntu Server 14.LTS rodando em uma máquina virtualizada pelo VirtualBox v5.0.24
+# https://eternallybored.org/misc/wget/
 
 # Antes de tudo, verifica se o usuário está rodando este script como root (créditos ao ):
 if [ $UID -ne 0 ]; then #if [$(id -n) != "0"]; também executa
